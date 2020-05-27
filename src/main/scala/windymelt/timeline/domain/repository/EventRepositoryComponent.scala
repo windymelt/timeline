@@ -1,12 +1,13 @@
 package windymelt.timeline.domain.repository
-        
-import windymelt.timeline.domain.model.Event
+
+import windymelt.timeline.domain.model.EventModelComponent
 
 trait EventRepositoryComponent {
-    val eventRepository: EventRepository
+  self: EventModelComponent =>
+  val eventRepository: EventRepository
 
-    trait EventRepository {
-        def save(event: Event): Event
-        def delete(event: Event): Unit
-    }
+  trait EventRepository {
+    def save(event: Event): Event
+    def delete(event: Event): Unit
+  }
 }
