@@ -1,4 +1,41 @@
-@()
-@layouts.html.default("Scalatra: a tiny, Sinatra-like web framework for Scala", "Welcome to Scalatra"){
-  <p>Hello, Twirl!</p>
+@(timelines: Seq[windymelt.timeline.application.dto.Timeline])
+@import windymelt.timeline.application.dto.DTODateTimeFormatter._
+@import scala.language.implicitConversions
+@layouts.html.default("Timeline: Describing your history", "サクサク年表君"){
+<div class="ui text container">
+  <h1>年表</h1>
+  @for(tl <- timelines) { <div class="ui raised  segment">
+    <h2>『@tl.title』 <small>-- <i class="user icon"></i> @tl.editor.name</small>
+    </h2>
+    @for(ev <- tl.events) { <a class="ui big red ribbon label">@ev.occurredAt.localFormat</a>
+      <span class="ui medium header">@ev.name</span>
+      <p>
+        <!-- dummy linebreaker -->
+      </p>
+      <p>@ev.description</p>
+      <p>
+        <!-- dummy linebreaker -->
+      </p>
+      }
+</div>
 }
+}
+</div>
+<div>
+  <h2>Debug console</h2>
+  <h3>Add User</h3>
+  <form action="/-/user" method="POST">
+    name <input type="text">
+    <button type="submit">submit</button>
+  </form>
+  <h3>Add Event</h3>
+  <form action="/-/event" method="POST">
+    name <input type="text">
+    <button type="submit">submit</button>
+  </form>
+  <h3>Add Timeline</h3>
+  <form action="/-/timeline" method="POST">
+    name <input type="text">
+    <button type="submit">submit</button>
+  </form>
+</div>
