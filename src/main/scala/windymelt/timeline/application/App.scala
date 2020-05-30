@@ -1,4 +1,4 @@
-package windymelt.application
+package windymelt.timeline.application
 
 import windymelt.timeline.domain.model._
 import windymelt.timeline.domain.service._
@@ -12,7 +12,8 @@ class App
     with InmemoryIdComponent
     with InmemoryUserRepositoryComponent
     with InmemoryEventRepositoryComponent
-    with InmemoryTimelineRepositoryComponent {
+    with InmemoryTimelineRepositoryComponent
+    with windymelt.timeline.application.dto.TimelineDTOFactoryComponent {
   val userService: ConcreteUserService = new ConcreteUserService()
 
   val ID: InMemoryIDFactory = new InMemoryIDFactory()
@@ -21,4 +22,5 @@ class App
   val eventRepository: InmemoryEventRepository = new InmemoryEventRepository()
   val timelineRepository: InmemoryTimelineRepository =
     new InmemoryTimelineRepository()
+  val timelineDTOFactory: TimelineDTOFactory = new TimelineDTOFactory()
 }
