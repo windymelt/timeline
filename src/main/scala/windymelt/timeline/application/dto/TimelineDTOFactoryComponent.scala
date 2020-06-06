@@ -19,7 +19,7 @@ trait TimelineDTOFactoryComponent {
         timeline: Timeline
     ): windymelt.timeline.application.dto.Timeline = {
       DTOTimeline(
-        timeline.id,
+        timeline.id.toString(),
         timeline.title,
         toDTO(timeline.editor),
         timeline.events.map(toDTO)
@@ -27,14 +27,14 @@ trait TimelineDTOFactoryComponent {
     }
     def toDTO(event: Event): windymelt.timeline.application.dto.Event = {
       DTOEvent(
-        event.id,
+        event.id.toString(),
         event.name,
         event.description.getOrElse(""),
         event.occurredAt
       )
     }
     def toDTO(user: User): windymelt.timeline.application.dto.User = {
-      DTOUser(user.id, user.name)
+      DTOUser(user.id.toString(), user.name)
     }
   }
 }

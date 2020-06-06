@@ -24,7 +24,8 @@ trait UserModelComponent {
         until: Option[DateTime] = None
     ): Event = {
       val eventId = ID.gen()
-      val ev = Event(eventId, name, description, occurredAt, until)
+      val ev =
+        Event(eventId, name, description, occurredAt, until, editor = this)
       eventRepository.save(ev)
     }
 

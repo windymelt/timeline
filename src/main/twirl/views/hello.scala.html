@@ -1,4 +1,5 @@
-@(timelines: Seq[windymelt.timeline.application.dto.Timeline])
+@(timelines: Seq[windymelt.timeline.application.dto.Timeline], triageEvents:
+Seq[windymelt.timeline.application.dto.Event])
 @import windymelt.timeline.application.dto.DTODateTimeFormatter._
 @import scala.language.implicitConversions
 @layouts.html.default("Timeline: Describing your history", "サクサク年表君"){
@@ -23,19 +24,73 @@
 </div>
 <div>
   <h2>Debug console</h2>
-  <h3>Add User</h3>
-  <form action="/-/user" method="POST">
-    name <input type="text">
-    <button type="submit">submit</button>
-  </form>
-  <h3>Add Event</h3>
-  <form action="/-/event" method="POST">
-    name <input type="text">
-    <button type="submit">submit</button>
-  </form>
-  <h3>Add Timeline</h3>
-  <form action="/-/timeline" method="POST">
-    name <input type="text">
-    <button type="submit">submit</button>
-  </form>
+  <h3>Events you created</h3>
+  @for(ev <- triageEvents) { <div>@ev.name (@ev.id)
+</div> } <h3>Add User</h3>
+<form action="/-/users" method="POST">
+  name <input type="text">
+  <button type="submit">submit</button>
+</form>
+<h3>Add Event</h3>
+<form action="/-/events" method="POST" class="js-post-event-form">
+  name <input name="name" type="text" class="js-name-input">
+  description <textarea name="description" class="js-description-input"></textarea>
+  occurredAt <input name="occurredAt" type="datetime-local" class="js-occurred-at-input">
+  <button type="submit">submit</button>
+</form>
+<h3>Add Timeline</h3>
+<form action="/-/timelines" method="POST" class="js-post-timeline-form">
+  title <input type="text" name="title" class="js-title-input">
+  events <textarea name="events" placeholder="id,id,id,..." class="js-events-input"></textarea>
+  <button type="submit">submit</button>
+</form>
 </div>
+<script lang="javascript">
+  // stub.
+  // events
+  // TODO: implement some CSRF token
+  (() => {
+    var postForm = document.querySelector('.js-post-event-form');
+    var nameInput = postForm.querySelector('.js-name-input');
+    var descriptionInput = postForm.querySelector('.js-description-input');
+    var occurredAtInput = postForm.querySelector('.js-occurred-at-input');
+    var btn = postForm.querySelector('button');
+
+    btn.addEventListener("click", (ev) => {
+      ev.preventDefault();
+      fetch('/-/events', {
+        method: "POST",
+        body: JSON.stringify({
+          name: nameInput.value,
+          description: descriptionInput.value,
+          occurredAt: occurredAtInput.value
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+    });
+  });
+
+  // timelines
+  (() => {
+    var postForm = document.querySelector('.js-post-timeline-form');
+    var titleInput = postForm.querySelector('.js-title-input');
+    var eventsInput = postForm.querySelector('.js-events-input');
+    var btn = postForm.querySelector('button');
+
+    btn.addEventListener("click", (ev) => {
+      ev.preventDefault();
+      fetch('/-/timelines', {
+        method: "POST",
+        body: JSON.stringify({
+          title: titleInput.value,
+          events: eventsInput.value
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+    });
+  })();
+</script>
