@@ -12,5 +12,7 @@ trait EventRepositoryComponent {
     def delete(event: Event): Unit
     def find(editor: User): Set[Event]
     def find(eventIds: Seq[windymelt.timeline.Types.ID]): Seq[Event]
+    def find(eventId: windymelt.timeline.Types.ID): Option[Event] =
+      find(Seq(eventId)).headOption
   }
 }

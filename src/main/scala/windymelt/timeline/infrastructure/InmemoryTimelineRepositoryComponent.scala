@@ -9,6 +9,9 @@ trait InmemoryTimelineRepositoryComponent extends TimelineRepositoryComponent {
 
   class InmemoryTimelineRepository extends TimelineRepository {
     var db = collection.mutable.Seq[Timeline]()
+    def find(id: BigInt): Option[Timeline] = {
+      db.find(_.id == id)
+    }
     def save(timeline: Timeline): Timeline =
       db.find(_.id == timeline.id) match {
         case Some(value) =>

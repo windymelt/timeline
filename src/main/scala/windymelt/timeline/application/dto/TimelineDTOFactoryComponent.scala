@@ -30,7 +30,9 @@ trait TimelineDTOFactoryComponent {
         event.id.toString(),
         event.name,
         event.description.getOrElse(""),
-        event.occurredAt
+        event.occurredAt,
+        DayLevel,
+        toDTO(event.editor)
       )
     }
     def toDTO(user: User): windymelt.timeline.application.dto.User = {

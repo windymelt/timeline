@@ -1,0 +1,59 @@
+@(event: Option[windymelt.timeline.application.dto.Event], csrfKey: String, csrfToken: String)
+@import windymelt.timeline.application.dto.DTODateTimeFormatter._
+@import org.joda.time.format.DateTimeFormat
+@import scala.language.implicitConversions
+@layouts.html.default("Timeline: Describing your history", "サクサク年表君", Seq("event_editor")){
+<div class="ui text container">
+    <h1>編集</h1>
+
+    <h2>Event Editor</h2>
+
+    <div class="ui form">
+        <div class="field">
+            <input type="text" placeholder="出来事の名前" value="@event.map(_.name)">
+        </div>
+        <div class="field">
+            @defining(event.map(ev => DateTimeFormat.forPattern("yyyy-MM-dd").print(ev.occurredAt))) { eventDate =>
+            <input type="date" placeholder="いつごろ？" value="@eventDate">
+            }
+        </div>
+        <div class="inline fields">
+            <label>粒度はどのくらい？</label>
+            <div class="field">
+                <div class="ui radio checkbox">
+                    <input type="radio" name="roughness">
+                    <label>年レベル</label>
+                </div>
+            </div>
+            <div class="field">
+                <div class="ui radio checkbox">
+                    <input type="radio" name="roughness">
+                    <label>月レベル</label>
+                </div>
+            </div>
+            <div class="field">
+                <div class="ui radio checkbox">
+                    <input type="radio" name="roughness" checked="checked">
+                    <label>日レベル</label>
+                </div>
+            </div>
+            <div class="field">
+                <div class="ui radio checkbox">
+                    <input type="radio" name="roughness">
+                    <label>時間レベル</label>
+                </div>
+            </div>
+        </div>
+        <div class="field">
+            <textarea placeholder="出来事の解説・意味・詳細" cols="80">@event.map(_.description)</textarea>
+        </div>
+        <div class="ui submit button">記録する</div>
+    </div>
+
+
+    <form action="/-/edit" method="POST">
+        <input type="hidden" name="@csrfKey" value="@csrfToken" />
+        <button type="submit">go</button>
+    </form>
+</div>
+}

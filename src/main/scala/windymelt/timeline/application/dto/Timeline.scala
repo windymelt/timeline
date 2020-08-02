@@ -28,6 +28,12 @@ object DTOJSONSerializer {
   }
 }
 
+sealed trait DateTimeCategory
+final object HourLevel extends DateTimeCategory
+final object DayLevel extends DateTimeCategory
+final object MonthLevel extends DateTimeCategory
+final object YearLevel extends DateTimeCategory
+
 trait DTO
 
 final case class Timeline(
@@ -47,5 +53,7 @@ final case class Event(
     id: String,
     name: String,
     description: String,
-    occurredAt: DateTime
+    occurredAt: DateTime,
+    occurredAtCategory: DateTimeCategory,
+    editor: User
 ) extends DTO

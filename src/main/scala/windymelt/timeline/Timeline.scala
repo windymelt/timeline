@@ -23,7 +23,10 @@ case class TimelineDRO(
     events: String
 )
 
-class Timeline extends ScalatraServlet with JacksonJsonSupport {
+class Timeline
+    extends ScalatraServlet
+    with JacksonJsonSupport
+    with XsrfTokenSupport {
   protected implicit lazy val jsonFormats: Formats = DefaultFormats
 
   val app = new windymelt.timeline.application.App()
@@ -96,6 +99,51 @@ class Timeline extends ScalatraServlet with JacksonJsonSupport {
     )
   }
 
+  get("/timelines/:id") {
+    import scala.util.control.Exception._
+    val idString: String = params("id")
+    val idOpt = allCatch opt { BigInt(idString) }
+    val timelineDTO = for {
+      id <- idOpt
+      timeline <- app.timelineRepository.find(id)
+    } yield app.timelineDTOFactory.toDTO(timeline)
+
+    timelineDTO match {
+      case Some(dto) => views.html.timeline(dto)
+      case None      => views.html.notfound()
+    }
+  }
+
+  get("/events/:id") {
+    import scala.util.control.Exception._
+    val idString: String = params("id")
+    val idOpt = allCatch opt { BigInt(idString) }
+    val eventDTO = for {
+      id <- idOpt
+      event <- app.eventRepository.find(id)
+    } yield app.timelineDTOFactory.toDTO(event)
+
+    eventDTO match {
+      case Some(dto) => views.html.event(dto)
+      case None      => views.html.notfound()
+    }
+  }
+
+  get("/events/:id/edit") {
+    import scala.util.control.Exception._
+    val idString: String = params("id")
+    val idOpt = allCatch opt { BigInt(idString) }
+    val eventDTO = for {
+      id <- idOpt
+      event <- app.eventRepository.find(id)
+    } yield app.timelineDTOFactory.toDTO(event)
+
+    eventDTO match {
+      case Some(dto) => views.html.eventedit(Some(dto), xsrfKey, xsrfToken)
+      case None      => views.html.notfound()
+    }
+  }
+
   post("/-/events") {
     // Create new event
     // accepts JSON
@@ -150,5 +198,15 @@ class Timeline extends ScalatraServlet with JacksonJsonSupport {
             "failed"
         }
     }
+  }
+
+  xsrfGuard("/-/edit")
+
+  get("/-/edit") {
+    views.html.eventedit(None, xsrfKey, xsrfToken)
+  }
+
+  post("/-/edit") {
+    "OK!!"
   }
 }

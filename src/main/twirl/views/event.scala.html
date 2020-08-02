@@ -1,0 +1,23 @@
+@(event: windymelt.timeline.application.dto.Event)
+@import windymelt.timeline.application.dto.DTODateTimeFormatter._
+@import scala.language.implicitConversions
+@layouts.html.default("Timeline: Describing your history", "サクサク年表君"){
+<div class="ui text container">
+    <h1>イベント</h1>
+    <div class="ui raised segment">
+        <a class="ui big red ribbon label" href="/events/@event.id">
+            @event.occurredAt.localFormat</a>
+        <a href="/events/@event.id/edit">
+            <div class="ui button"><i class="pen square icon"></i>Edit</div>
+        </a>
+        <h2>『@event.name』 <small>-- <i class="user icon"></i> @event.editor.name</small>
+        </h2>
+        <p>@event.description</p>
+    </div>
+</div>
+
+<div>
+    このイベントを参照している年表
+    TBD
+</div>
+}

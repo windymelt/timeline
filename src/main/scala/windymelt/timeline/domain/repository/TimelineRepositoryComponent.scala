@@ -5,6 +5,7 @@ trait TimelineRepositoryComponent {
   val timelineRepository: TimelineRepository
 
   trait TimelineRepository {
+    def find(id: BigInt): Option[Timeline]
     def save(timeline: Timeline): Timeline
     def delete(timeline: Timeline): Unit
   }

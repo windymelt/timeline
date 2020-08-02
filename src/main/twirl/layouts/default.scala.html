@@ -1,4 +1,4 @@
-@(title: String, headline: String)(body: Html)
+@(title: String, headline: String, pageTags: Seq[String] = Seq.empty)(body: Html)
 <html>
 
 <head>
@@ -9,12 +9,11 @@
   <script src=@{"/js/entrypoint.js"}></script>
 </head>
 
-<body>
+<body data-page-tags=@{pageTags.mkString(" ")}>
   <h1>@headline</h1>
   @body
   <address>
-    サクサク年表君 by @{"@Windymelt"}
-  </address>
+    サクサク年表君 by @{" @Windymelt"} </address>
 </body>
 
 </html>
