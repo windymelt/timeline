@@ -1,4 +1,5 @@
-@(title: String, headline: String, pageTags: Seq[String] = Seq.empty)(body: Html)
+@(title: String, headline: String, pageTags: Seq[String] = Seq.empty)(body: Html)(implicit tl:
+windymelt.timeline.Timeline, req: javax.servlet.http.HttpServletRequest)
 <html>
 
 <head>
@@ -10,7 +11,7 @@
 </head>
 
 <body data-page-tags=@{pageTags.mkString(" ")}>
-  <h1>@headline</h1>
+  <h1><a href=" /">@headline</a></h1>
   @body
   <address>
     サクサク年表君 by @{" @Windymelt"} </address>

@@ -26,11 +26,13 @@ case class TimelineDRO(
 class Timeline
     extends ScalatraServlet
     with JacksonJsonSupport
-    with XsrfTokenSupport {
+    with XsrfTokenSupport
+    with UrlGeneratorSupport /* reverse routing support */ {
   protected implicit lazy val jsonFormats: Formats = DefaultFormats
 
   val app = new windymelt.timeline.application.App()
   val user = app.userService.create("guest").right.get
+  implicit val thistl = this
 
   val ev1 = user.createEvent(
     "爆誕",
@@ -83,7 +85,6 @@ class Timeline
   val tl2 = user.createTimeline("日露戦争", Seq(evb1, evb2, evb3, evb4))
 
   get("/") {
-
     val triageEvent =
       app.eventService
         .findByEditor(user)
@@ -198,6 +199,10 @@ class Timeline
             "failed"
         }
     }
+  }
+
+  val editroom = get("/-/editroom") {
+    views.html.editroom()
   }
 
   xsrfGuard("/-/edit")

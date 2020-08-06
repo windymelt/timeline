@@ -18,10 +18,12 @@ libraryDependencies ++= Seq(
   "org.scalatra" %% "scalatra-json" % ScalatraVersion,
   "org.json4s" %% "json4s-jackson" % json4sVersion,
   "ch.qos.logback" % "logback-classic" % "1.2.3" % "runtime",
-  "org.eclipse.jetty" % "jetty-webapp" % "9.4.28.v20200408" % "container",
+  "org.eclipse.jetty" % "jetty-webapp" % "9.4.28.v20200408" % "container;compile",
   "javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided",
   "com.github.nscala-time" %% "nscala-time" % "2.24.0"
 )
 
 enablePlugins(SbtTwirl)
 enablePlugins(ScalatraPlugin)
+
+TwirlKeys.templateImports += "javax.servlet.http.HttpServletRequest" // to import HttpServletRequest

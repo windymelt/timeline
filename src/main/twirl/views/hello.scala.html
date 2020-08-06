@@ -1,26 +1,31 @@
 @(timelines: Seq[windymelt.timeline.application.dto.Timeline], triageEvents:
-Seq[windymelt.timeline.application.dto.Event])
+Seq[windymelt.timeline.application.dto.Event])(implicit tl: windymelt.timeline.Timeline, req: HttpServletRequest)
 @import windymelt.timeline.application.dto.DTODateTimeFormatter._
 @import windymelt.timeline.application.URI
 @import scala.language.implicitConversions
 @layouts.html.default("Timeline: Describing your history", "サクサク年表君"){
-<div class="ui text container">
-  <h1>年表</h1>
-  @for(tl <- timelines) { <div class="ui raised  segment">
-    <h2><a href="@{URI.permanent(tl)}">『@tl.title』</a> <small>-- <i class="user icon"></i> @tl.editor.name</small>
-    </h2>
-    @for(ev <- tl.events) { <a class="ui big red ribbon label">@ev.occurredAt.localFormat</a>
-      <span class="ui medium header">@ev.name</span>
-      <p>
-        <!-- dummy linebreaker -->
-      </p>
-      <p>@ev.description</p>
-      <p>
-        <!-- dummy linebreaker -->
-      </p>
-      }
+<div class="ui grid">
+  @menu("top")
+  <div class="" twelve wide stretched column">
+    <div class="ui text container">
+      <h1>年表</h1>
+      @for(tl <- timelines) { <div class="ui raised  segment">
+        <h2><a href="@{URI.permanent(tl)}">『@tl.title』</a> <small>-- <i class="user icon"></i> @tl.editor.name</small>
+        </h2>
+        @for(ev <- tl.events) { <a class="ui big red ribbon label">@ev.occurredAt.localFormat</a>
+          <span class="ui medium header">@ev.name</span>
+          <p>
+            <!-- dummy linebreaker -->
+          </p>
+          <p>@ev.description</p>
+          <p>
+            <!-- dummy linebreaker -->
+          </p>
+          }
+    </div>
+    }
+  </div>
 </div>
-}
 }
 </div>
 <div>

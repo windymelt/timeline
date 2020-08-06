@@ -1,0 +1,14 @@
+@(active: String)(implicit tl: windymelt.timeline.Timeline, req: HttpServletRequest)
+<div class="four wide column">
+    <div class="ui vertical fluid tabular menu">
+        <a class="active item" href="/">
+            玄関
+        </a>
+        <a class="item">
+            年表を探す <i class="hard hat icon"></i>
+        </a>
+        <a class="item" href="@{tl.url(tl.editroom)}">
+            年表編纂室 <i class="hard hat icon"></i>
+        </a>
+    </div>
+</div>

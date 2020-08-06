@@ -1,4 +1,5 @@
-@(event: Option[windymelt.timeline.application.dto.Event], csrfKey: String, csrfToken: String)
+@(event: Option[windymelt.timeline.application.dto.Event], csrfKey: String, csrfToken: String)(implicit tl:
+windymelt.timeline.Timeline, req: HttpServletRequest)
 @import windymelt.timeline.application.dto.DTODateTimeFormatter._
 @import org.joda.time.format.DateTimeFormat
 @import scala.language.implicitConversions
