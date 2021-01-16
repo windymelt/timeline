@@ -20,7 +20,14 @@ libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.2.3" % "runtime",
   "org.eclipse.jetty" % "jetty-webapp" % "9.4.28.v20200408" % "container;compile",
   "javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided",
-  "com.github.nscala-time" %% "nscala-time" % "2.24.0"
+  "com.github.nscala-time" %% "nscala-time" % "2.24.0",
+  // DB
+  "mysql" % "mysql-connector-java" % "8.0.22",
+  "org.scalikejdbc" %% "scalikejdbc" % "3.5.0",
+  "com.h2database" % "h2" % "1.4.200", // for test purpose
+  "ch.qos.logback" % "logback-classic" % "1.2.3",
+  "org.scalikejdbc" %% "scalikejdbc-test" % "3.5.0" % "test",
+  "org.scalikejdbc" %% "scalikejdbc-config" % "3.5.0" // to read application.conf
 )
 
 lazy val root =

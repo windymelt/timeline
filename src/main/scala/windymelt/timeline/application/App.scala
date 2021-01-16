@@ -5,7 +5,8 @@ import windymelt.timeline.domain.service._
 import windymelt.timeline.infrastructure._
 
 class App
-    extends UserModelComponent
+    extends Database
+    with UserModelComponent
     with EventModelComponent
     with TimelineModelComponent
     with ConcreteUserServiceComponent
