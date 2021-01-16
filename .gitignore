@@ -78,3 +78,6 @@ project/project/
 # frontend
 frontend/dist/*
 frontend/node_modules
+
+# DB, etc.
+tmp/
