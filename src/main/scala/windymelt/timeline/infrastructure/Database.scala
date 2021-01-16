@@ -8,7 +8,8 @@ trait Database {
   scalikejdbc.config.DBs.setupAll()
 
   // test
-  val memberIds = DB readOnly { implicit session =>
+  val value = DB readOnly { implicit session =>
     sql"select 1 as one".map(_.long(1)).list.apply()
   }
+  println(s"DB Connection has been established: $value")
 }

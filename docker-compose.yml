@@ -15,6 +15,8 @@ services:
                 - OPENJDK_TAG=8u232
                 - SBT_VERSION=1.4.5 # check out project/build.properties
         command: sbt "~jetty:start"
+        depends_on:
+            - db
         volumes: 
             - ~/.ivy2:/root/.ivy2
             - ~/.sbt:/root/.sbt
