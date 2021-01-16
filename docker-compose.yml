@@ -7,3 +7,18 @@ services:
             - ./frontend/dist/:/usr/share/nginx/js/:ro
         ports: 
             - 8000:80
+    app:
+        build:
+            dockerfile: Dockerfile.devel
+            context: .
+            args: 
+                - OPENJDK_TAG=8u232
+                - SBT_VERSION=1.4.5 # check out project/build.properties
+        command: sbt "~jetty:start"
+        volumes: 
+            - ~/.ivy2:/root/.ivy2
+            - ~/.sbt:/root/.sbt
+            - .:/app
+        working_dir: /app
+        ports: 
+            - 8080:8080

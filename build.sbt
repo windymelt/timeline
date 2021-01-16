@@ -8,7 +8,7 @@ name := "Timeline"
 
 version := "0.1.0-SNAPSHOT"
 
-scalaVersion := "2.13.1"
+scalaVersion := "2.13.4"
 
 resolvers += Classpaths.typesafeReleases
 
@@ -23,7 +23,7 @@ libraryDependencies ++= Seq(
   "com.github.nscala-time" %% "nscala-time" % "2.24.0"
 )
 
-enablePlugins(SbtTwirl)
-enablePlugins(ScalatraPlugin)
+lazy val root =
+  (project in file(".")).enablePlugins(SbtTwirl).enablePlugins(ScalatraPlugin)
 
 TwirlKeys.templateImports += "javax.servlet.http.HttpServletRequest" // to import HttpServletRequest
