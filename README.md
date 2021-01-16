@@ -1,12 +1,23 @@
 # Timeline #
 
-## Build & Run ##
+# Prepare DB
+
+Starts up MySQL and keep window open:
 
 ```sh
-$ cd timeline
-$ sbt
-> jetty:start
-> browse
+$ docker-compose up db
 ```
 
-If `browse` doesn't launch your browser, manually open [http://localhost:8080/](http://localhost:8080/) in your browser.
+Then in another terminal execute setup script:
+
+```sh
+$ ./script/setup_db_docker.sh
+```
+
+# Run
+
+```sh
+$ docker-compose up
+```
+
+Open [http://localhost:8000/](http://localhost:8000/) in your browser.
