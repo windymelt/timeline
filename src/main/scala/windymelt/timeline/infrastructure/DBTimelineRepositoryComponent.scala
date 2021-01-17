@@ -21,9 +21,9 @@ trait DBTimelineRepositoryComponent extends TimelineRepositoryComponent {
 
   val timelineRepository: TimelineRepository
 
-  val table = "timeline"
-
   class DBTimelineRepository extends TimelineRepository {
+    val table = "timeline"
+
     private def getTimelineFromRs(
         rs: WrappedResultSet
     )(implicit session: DBSession) = {

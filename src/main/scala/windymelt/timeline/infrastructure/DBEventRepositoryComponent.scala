@@ -15,9 +15,9 @@ trait DBEventRepositoryComponent extends EventRepositoryComponent {
 
   val eventRepository: EventRepository
 
-  val table = "event"
-
   class DBEventRepository extends EventRepository {
+    val table = "event"
+
     private def getEventFromRs(
         rs: WrappedResultSet
     )(implicit session: DBSession) = {

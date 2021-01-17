@@ -16,9 +16,9 @@ trait DBUserRepositoryComponent extends UserRepositoryComponent {
 
   val userRepository: UserRepository
 
-  val table = "user"
-
   class DBUserRepository extends UserRepository {
+    val table = "user"
+
     private def getUserFromRs(rs: WrappedResultSet)(
         implicit session: DBSession
     ): User = {
