@@ -31,9 +31,12 @@ class Timeline
   protected implicit lazy val jsonFormats: Formats = DefaultFormats
 
   val app = new windymelt.timeline.application.App()
-  val user = app.userService.create("guest").right.get
+  val user = app.userRepository.find("guest") match {
+    case Some(u) => u
+    case None    => app.userService.create("guest").right.get
+  }
   implicit val thistl = this
-
+  /*
   val ev1 = user.createEvent(
     "爆誕",
     Some("オギャ～"),
@@ -83,8 +86,22 @@ class Timeline
     DateTime.parse("1904-02-09")
   )
   val tl2 = user.createTimeline("日露戦争", Seq(evb1, evb2, evb3, evb4))
+   */
+  def withContext(action: (Context) => Any) = {
+    val ctx = windymelt.timeline.Context(app)
+    action(ctx)
+  }
 
   get("/") {
+    val user = app.userRepository.find("guest").get // TODO
+    val tls = app.timelineRepository.findByEditor(user)
+    val eventsByTimelineId: Map[Types.ID, Seq[app.Event]] =
+      tls.map(tl => tl.id -> app.eventService.findByTimeline(tl).toSeq).toMap
+
+    val tlvas =
+      tls
+        .map(tl => app.timelineDTOFactory.toDTO(tl, eventsByTimelineId(tl.id)))
+        .toSeq
     val triageEvent =
       app.eventService
         .findByEditor(user)
@@ -92,10 +109,7 @@ class Timeline
         .toSeq
 
     views.html.hello(
-      Seq(
-        app.timelineDTOFactory.toDTO(tl),
-        app.timelineDTOFactory.toDTO(tl2)
-      ),
+      tlvas,
       triageEvent
     )
   }
@@ -107,7 +121,8 @@ class Timeline
     val timelineDTO = for {
       id <- idOpt
       timeline <- app.timelineRepository.find(id)
-    } yield app.timelineDTOFactory.toDTO(timeline)
+      events <- Some(app.eventService.findByTimeline(timeline))
+    } yield app.timelineDTOFactory.toDTO(timeline, events)
 
     timelineDTO match {
       case Some(dto) => views.html.timeline(dto)
@@ -193,7 +208,8 @@ class Timeline
 
         createdTimeline match {
           case Right(tl) =>
-            app.timelineDTOFactory.toDTO(tl)
+            val events = app.eventService.findByTimeline(tl)
+            app.timelineDTOFactory.toDTO(tl, events)
           case Left(_) =>
             status = 500
             "failed"

@@ -3,9 +3,13 @@ package windymelt.timeline.infrastructure
 import windymelt.timeline.domain.repository.EventRepositoryComponent
 import windymelt.timeline.domain.model.EventModelComponent
 import windymelt.timeline.domain.model.UserModelComponent
+import windymelt.timeline.Types
+import windymelt.timeline.domain.model.TimelineModelComponent
 
 trait InmemoryEventRepositoryComponent extends EventRepositoryComponent {
-  self: EventModelComponent with UserModelComponent =>
+  self: EventModelComponent
+    with UserModelComponent
+    with TimelineModelComponent =>
   val eventRepository: EventRepository
 
   class InmemoryEventRepository extends EventRepository {
@@ -34,5 +38,12 @@ trait InmemoryEventRepositoryComponent extends EventRepositoryComponent {
         println(s"check ${ev.id} in $eventIds"); eventIds contains ev.id
       }.toSeq
     }
+
+    def findByTimelineId(timelineId: Types.ID): Seq[Event] = {
+      ???
+    }
+
+    def addRelationToTimeline(timeline: Timeline, events: Set[Event]): Unit =
+      ???
   }
 }

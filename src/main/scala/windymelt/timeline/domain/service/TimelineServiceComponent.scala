@@ -48,7 +48,7 @@ trait ConcreteTimelineServiceComponent extends TimelineServiceComponent {
 
       val id = ID.gen()
 
-      val tl = Timeline(id, title, editor, events, Set()) // TODO: extend
+      val tl = Timeline(id, title, editor, Set()) // TODO: extend
 
       timelineRepository.save(tl)
 

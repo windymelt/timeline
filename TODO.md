@@ -2,9 +2,9 @@
 
 - [ ] データのハードコードをやめる
   - [ ] データをDBに格納する
-    - [ ] DBドライバを選択する(ScalikeJDBC?) / ORMはいったん使わない
+    - [x] DBドライバを選択する(ScalikeJDBC?) / ORMはいったん使わない
       - ScalikeJDBC 3 (requires Java SE 8 or higher)
-    - [ ] MySQLがDocker Composeで起動できるようにする
+    - [x] MySQLがDocker Composeで起動できるようにする
     - [ ] SQL Schema
     - [ ] DB migration scriptを用意する
     - [ ] コネクションプールを用意する
