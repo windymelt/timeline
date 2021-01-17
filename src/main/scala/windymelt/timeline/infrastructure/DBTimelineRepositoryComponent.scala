@@ -22,8 +22,6 @@ trait DBTimelineRepositoryComponent extends TimelineRepositoryComponent {
   val timelineRepository: TimelineRepository
 
   class DBTimelineRepository extends TimelineRepository {
-    val table = "timeline"
-
     private def getTimelineFromRs(
         rs: WrappedResultSet
     )(implicit session: DBSession) = {
@@ -35,22 +33,33 @@ trait DBTimelineRepositoryComponent extends TimelineRepositoryComponent {
           .get
       Timeline(rs.get("id"), rs.get("title"), u, Set()) // TODO
     }
+
     def find(id: BigInt): Option[Timeline] = DB readOnly { implicit session =>
-      sql"SELECT * FROM timeline WHERE id=${id}"
+      sql"SELECT * FROM `timeline` WHERE id=${id}"
         .map(getTimelineFromRs)
         .single()
         .apply()
     }
 
-    def save(timeline: Timeline): Timeline = DB autoCommit { implicit session =>
-      sql"""
-      INSERT INTO $table
+    def findByEditor(user: User): Set[Timeline] = DB readOnly {
+      implicit session =>
+        sql"SELECT * FROM `timeline` WHERE editor_user_id=${user.id}"
+          .map(getTimelineFromRs)
+          .list()
+          .apply()
+          .toSet
+    }
+
+    def save(timeline: Timeline): Timeline = {
+      DB autoCommit { implicit session =>
+        sql"""
+      INSERT INTO `timeline`
       SET id=${timeline.id},
         title=${timeline.title},
         editor_user_id=${timeline.editor.id}
-      """
-        .update()
-        .apply()
+      """.update()
+          .apply()
+      }
       find(timeline.id).get
     }
 

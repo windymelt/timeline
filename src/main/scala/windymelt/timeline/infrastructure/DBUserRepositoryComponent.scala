@@ -17,8 +17,6 @@ trait DBUserRepositoryComponent extends UserRepositoryComponent {
   val userRepository: UserRepository
 
   class DBUserRepository extends UserRepository {
-    val table = "user"
-
     private def getUserFromRs(rs: WrappedResultSet)(
         implicit session: DBSession
     ): User = {
@@ -28,31 +26,31 @@ trait DBUserRepositoryComponent extends UserRepositoryComponent {
     def save(user: User): User = {
       DB autoCommit { implicit session =>
         sql"""
-        INSERT INTO $table
+        INSERT INTO `user`
         SET id=${user.id},
             name=${user.name}
         ON DUPLICATE KEY UPDATE name=VALUES(name)
         """.update().apply()
-        find(user.id).get
       }
+      find(user.id).get
     }
 
     def find(id: Types.ID): Option[User] = DB readOnly { implicit session =>
-      sql"SELECT * FROM $table WHERE id=${id}"
+      sql"SELECT * FROM `user` WHERE id=${id}"
         .map(getUserFromRs)
         .headOption()
         .apply()
     }
 
     def find(name: String): Option[User] = DB readOnly { implicit session =>
-      sql"SELECT * FROM $table WHERE name=${name}"
+      sql"SELECT * FROM `user` WHERE name=${name}"
         .map(getUserFromRs)
         .headOption()
         .apply()
     }
 
     def delete(user: User): Unit = DB autoCommit { implicit session =>
-      sql"DELETE FROM $table WHERE id=${user.id}".update().apply()
+      sql"DELETE FROM `user` WHERE id=${user.id}".update().apply()
     }
 
   }

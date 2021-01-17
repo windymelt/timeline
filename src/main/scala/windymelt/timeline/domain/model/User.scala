@@ -38,6 +38,7 @@ trait UserModelComponent {
       val timelineId = ID.gen()
       val tl = Timeline(timelineId, title, this, extendedFrom)
       events foreach (eventRepository.save)
+      eventRepository.addRelationToTimeline(tl, events.toSet)
       timelineRepository.save(tl)
     }
   }

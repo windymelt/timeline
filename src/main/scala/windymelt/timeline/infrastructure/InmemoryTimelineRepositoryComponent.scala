@@ -2,9 +2,10 @@ package windymelt.timeline.infrastructure
 
 import windymelt.timeline.domain.model.TimelineModelComponent
 import windymelt.timeline.domain.repository.TimelineRepositoryComponent
+import windymelt.timeline.domain.model.UserModelComponent
 
 trait InmemoryTimelineRepositoryComponent extends TimelineRepositoryComponent {
-  self: TimelineModelComponent =>
+  self: TimelineModelComponent with UserModelComponent =>
   val timelineRepository: InmemoryTimelineRepository
 
   class InmemoryTimelineRepository extends TimelineRepository {
@@ -25,5 +26,6 @@ trait InmemoryTimelineRepositoryComponent extends TimelineRepositoryComponent {
     def delete(timeline: Timeline): Unit = {
       db = db.filterNot(_.id == timeline.id)
     }
+    def findByEditor(user: User): Set[Timeline] = ???
   }
 }

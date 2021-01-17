@@ -16,8 +16,8 @@ trait Database {
   }
   println(s"DB Connection has been established: $value")
 
-  def UUID(): BigInt = DB localTx { implicit session =>
-    sql"SELECT UUID() AS uuid"
+  def uuid_short(): BigInt = DB localTx { implicit session =>
+    sql"SELECT UUID_SHORT() AS uuid_short"
       .map(_.long(1))
       .headOption()
       .apply()

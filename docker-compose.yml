@@ -16,7 +16,7 @@ services:
             args: 
                 - OPENJDK_TAG=8u232
                 - SBT_VERSION=1.4.5 # check out project/build.properties
-        command: sbt "~jetty:start"
+        command: sbt "~jetty:stop;jetty:start"
         depends_on:
             - db
         volumes: 

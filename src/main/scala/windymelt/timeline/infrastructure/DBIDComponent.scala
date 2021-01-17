@@ -8,6 +8,6 @@ trait DBIDComponent extends IDComponent {
   val ID: IDFactory
 
   class DBIDFactory extends IDFactory {
-    def gen(): Types.ID = UUID()
+    def gen(): Types.ID = uuid_short()
   }
 }
