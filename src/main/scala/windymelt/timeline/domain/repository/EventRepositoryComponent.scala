@@ -14,5 +14,6 @@ trait EventRepositoryComponent {
     def find(eventIds: Seq[windymelt.timeline.Types.ID]): Seq[Event]
     def find(eventId: windymelt.timeline.Types.ID): Option[Event] =
       find(Seq(eventId)).headOption
+    def findByTimelineId(timelineId: windymelt.timeline.Types.ID): Seq[Event]
   }
 }

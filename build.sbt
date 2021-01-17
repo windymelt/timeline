@@ -24,6 +24,7 @@ libraryDependencies ++= Seq(
   // DB
   "mysql" % "mysql-connector-java" % "8.0.22",
   "org.scalikejdbc" %% "scalikejdbc" % "3.5.0",
+  "org.scalikejdbc" %% "scalikejdbc-joda-time" % "3.5.0", // use joda time / nscalatime
   "com.h2database" % "h2" % "1.4.200", // for test purpose
   "ch.qos.logback" % "logback-classic" % "1.2.3",
   "org.scalikejdbc" %% "scalikejdbc-test" % "3.5.0" % "test",

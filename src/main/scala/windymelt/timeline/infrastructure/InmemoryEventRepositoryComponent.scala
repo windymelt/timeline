@@ -3,6 +3,7 @@ package windymelt.timeline.infrastructure
 import windymelt.timeline.domain.repository.EventRepositoryComponent
 import windymelt.timeline.domain.model.EventModelComponent
 import windymelt.timeline.domain.model.UserModelComponent
+import windymelt.timeline.Types
 
 trait InmemoryEventRepositoryComponent extends EventRepositoryComponent {
   self: EventModelComponent with UserModelComponent =>
@@ -33,6 +34,10 @@ trait InmemoryEventRepositoryComponent extends EventRepositoryComponent {
       db.filter { ev =>
         println(s"check ${ev.id} in $eventIds"); eventIds contains ev.id
       }.toSeq
+    }
+
+    def findByTimelineId(timelineId: Types.ID): Seq[Event] = {
+      ???
     }
   }
 }

@@ -2,6 +2,9 @@ package windymelt.timeline.infrastructure
 
 trait Database {
   import scalikejdbc._
+  import scalikejdbc.jodatime.JodaParameterBinderFactory._
+  import scalikejdbc.jodatime.JodaBinders._
+  import com.github.nscala_time.time.Imports._
 
   // Setup connection-pool regards to application.conf.
   // cf. application.conf.
@@ -12,4 +15,12 @@ trait Database {
     sql"select 1 as one".map(_.long(1)).list.apply()
   }
   println(s"DB Connection has been established: $value")
+
+  def UUID(): BigInt = DB localTx { implicit session =>
+    sql"SELECT UUID() AS uuid"
+      .map(_.long(1))
+      .headOption()
+      .apply()
+      .get
+  }
 }

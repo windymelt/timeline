@@ -16,13 +16,14 @@ trait TimelineDTOFactoryComponent {
   class TimelineDTOFactory {
     // TODO: Shapeless?
     def toDTO(
-        timeline: Timeline
+        timeline: Timeline,
+        events: Seq[Event]
     ): windymelt.timeline.application.dto.Timeline = {
       DTOTimeline(
         timeline.id.toString(),
         timeline.title,
         toDTO(timeline.editor),
-        timeline.events.map(toDTO)
+        events.map(toDTO)
       )
     }
     def toDTO(event: Event): windymelt.timeline.application.dto.Event = {

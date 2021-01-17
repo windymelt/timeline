@@ -36,7 +36,8 @@ trait UserModelComponent {
     ): Timeline = {
       // TODO: Domain Service: Timeline merger/editor?
       val timelineId = ID.gen()
-      val tl = Timeline(timelineId, title, this, events, extendedFrom)
+      val tl = Timeline(timelineId, title, this, extendedFrom)
+      events foreach (eventRepository.save)
       timelineRepository.save(tl)
     }
   }
