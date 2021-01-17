@@ -70,5 +70,5 @@ CREATE TABLE `timeline_extended_relation` (
     `timeline_id` BIGINT UNSIGNED NOT NULL,
     `parent_timeline_id` BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
-    UNIQUE KEYE `timeline_parent_timeline` (`timeline_id`, `parent_timeline_id`)
+    UNIQUE KEY `timeline_parent_timeline` (`timeline_id`, `parent_timeline_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
