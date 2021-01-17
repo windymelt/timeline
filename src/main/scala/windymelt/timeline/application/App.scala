@@ -12,20 +12,18 @@ class App
     with ConcreteUserServiceComponent
     with ConcreteEventServiceComponent
     with ConcreteTimelineServiceComponent
-    with InmemoryIdComponent
-    with InmemoryUserRepositoryComponent
-    with InmemoryEventRepositoryComponent
-    with InmemoryTimelineRepositoryComponent
+    with DBIDComponent
+    with DBUserRepositoryComponent
+    with DBEventRepositoryComponent
+    with DBTimelineRepositoryComponent
     with windymelt.timeline.application.dto.TimelineDTOFactoryComponent {
   val userService: ConcreteUserService = new ConcreteUserService()
   val eventService: ConcreteEventService = new ConcreteEventService()
   val timelineService: TimelineService = new ConcreteTimelineService()
-
-  val ID: InMemoryIDFactory = new InMemoryIDFactory()
-
-  val userRepository: InmemoryUserRepository = new InmemoryUserRepository()
-  val eventRepository: InmemoryEventRepository = new InmemoryEventRepository()
-  val timelineRepository: InmemoryTimelineRepository =
-    new InmemoryTimelineRepository()
+  val ID: IDFactory = new DBIDFactory()
+  val userRepository: UserRepository = new DBUserRepository()
+  val eventRepository: EventRepository = new DBEventRepository()
+  val timelineRepository: TimelineRepository =
+    new DBTimelineRepository()
   val timelineDTOFactory: TimelineDTOFactory = new TimelineDTOFactory()
 }
