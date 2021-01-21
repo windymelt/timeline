@@ -10,6 +10,7 @@ import org.json4s.JsonAST.JNothing
 import org.json4s.JsonAST.JNull
 
 import windymelt.timeline.application.dto.DTOJSONSerializer._
+import javax.servlet.http.HttpServletRequest
 
 // data receive object
 case class Event(
@@ -31,11 +32,7 @@ class Timeline
   protected implicit lazy val jsonFormats: Formats = DefaultFormats
 
   val app = new windymelt.timeline.application.App()
-  val user = app.userRepository.find("guest") match {
-    case Some(u) => u
-    case None    => app.userService.create("guest").right.get
-  }
-  implicit val thistl = this
+  implicit val router = this
   /*
   val ev1 = user.createEvent(
     "爆誕",
@@ -87,76 +84,66 @@ class Timeline
   )
   val tl2 = user.createTimeline("日露戦争", Seq(evb1, evb2, evb3, evb4))
    */
-  def withContext(action: (Context) => Any) = {
-    val ctx = windymelt.timeline.Context(app)
+  def withContext(
+      action: (Context) => Any
+  )(implicit req: HttpServletRequest) = {
+    val ctx = app.ctxBuilder(app, router)(req)
     action(ctx)
   }
 
   get("/") {
-    val user = app.userRepository.find("guest").get // TODO
-    val tls = app.timelineRepository.findByEditor(user)
-    val eventsByTimelineId: Map[Types.ID, Seq[app.Event]] =
-      tls.map(tl => tl.id -> app.eventService.findByTimeline(tl).toSeq).toMap
-
-    val tlvas =
-      tls
-        .map(tl => app.timelineDTOFactory.toDTO(tl, eventsByTimelineId(tl.id)))
-        .toSeq
-    val triageEvent =
-      app.eventService
-        .findByEditor(user)
-        .map(app.timelineDTOFactory.toDTO(_))
-        .toSeq
-
-    views.html.hello(
-      tlvas,
-      triageEvent
-    )
+    withContext(implicit ctx => windymelt.timeline.web.Top.index)
   }
 
   get("/timelines/:id") {
-    import scala.util.control.Exception._
-    val idString: String = params("id")
-    val idOpt = allCatch opt { BigInt(idString) }
-    val timelineDTO = for {
-      id <- idOpt
-      timeline <- app.timelineRepository.find(id)
-      events <- Some(app.eventService.findByTimeline(timeline))
-    } yield app.timelineDTOFactory.toDTO(timeline, events)
+    withContext { implicit ctx =>
+      import scala.util.control.Exception._
+      val idString: String = params("id")
+      val idOpt = allCatch opt { BigInt(idString) }
+      val timelineDTO = for {
+        id <- idOpt
+        timeline <- app.timelineRepository.find(id)
+        events <- Some(app.eventService.findByTimeline(timeline))
+      } yield app.timelineDTOFactory.toDTO(timeline, events)
 
-    timelineDTO match {
-      case Some(dto) => views.html.timeline(dto)
-      case None      => views.html.notfound()
+      timelineDTO match {
+        case Some(dto) => views.html.timeline(dto)
+        case None      => views.html.notfound()
+      }
     }
   }
 
   get("/events/:id") {
-    import scala.util.control.Exception._
-    val idString: String = params("id")
-    val idOpt = allCatch opt { BigInt(idString) }
-    val eventDTO = for {
-      id <- idOpt
-      event <- app.eventRepository.find(id)
-    } yield app.timelineDTOFactory.toDTO(event)
+    withContext { implicit ctx =>
+      import scala.util.control.Exception._
+      val idString: String = params("id")
+      val idOpt = allCatch opt { BigInt(idString) }
+      val eventDTO = for {
+        id <- idOpt
+        event <- app.eventRepository.find(id)
+      } yield app.timelineDTOFactory.toDTO(event)
 
-    eventDTO match {
-      case Some(dto) => views.html.event(dto)
-      case None      => views.html.notfound()
+      eventDTO match {
+        case Some(dto) => views.html.event(dto)
+        case None      => views.html.notfound()
+      }
     }
   }
 
   get("/events/:id/edit") {
-    import scala.util.control.Exception._
-    val idString: String = params("id")
-    val idOpt = allCatch opt { BigInt(idString) }
-    val eventDTO = for {
-      id <- idOpt
-      event <- app.eventRepository.find(id)
-    } yield app.timelineDTOFactory.toDTO(event)
+    withContext { implicit ctx =>
+      import scala.util.control.Exception._
+      val idString: String = params("id")
+      val idOpt = allCatch opt { BigInt(idString) }
+      val eventDTO = for {
+        id <- idOpt
+        event <- app.eventRepository.find(id)
+      } yield app.timelineDTOFactory.toDTO(event)
 
-    eventDTO match {
-      case Some(dto) => views.html.eventedit(Some(dto), xsrfKey, xsrfToken)
-      case None      => views.html.notfound()
+      eventDTO match {
+        case Some(dto) => views.html.eventedit(Some(dto), xsrfKey, xsrfToken)
+        case None      => views.html.notfound()
+      }
     }
   }
 
@@ -164,20 +151,30 @@ class Timeline
     // Create new event
     // accepts JSON
 
-    // returns JSON
-    contentType = formats("json")
+    withContext { implicit ctx =>
+      // returns JSON
+      contentType = formats("json")
 
-    val ast = parsedBody
-    ast match {
-      case JNothing =>
-      // not json.
-      case otherwise =>
-        println(otherwise)
-        val ev = ast.extract[Event]
-        val occurredAt = DateTime.parse(ev.occurredAt) // TODO: Guard
-        val createdEv =
-          user.createEvent(ev.name, Some(ev.description), occurredAt, None)
-        app.timelineDTOFactory.toDTO(createdEv).toJSON
+      val ast = parsedBody
+      ast match {
+        case JNothing =>
+        // not json.
+        case otherwise =>
+          println(otherwise)
+          val ev = ast.extract[Event]
+          val occurredAt = DateTime.parse(ev.occurredAt) // TODO: Guard
+          val visitor = ctx.app.userRepository.find(ctx.visitor.name).get
+
+          val createdEv =
+            ctx.app.eventService.createEvent(
+              ev.name,
+              Some(ev.description),
+              occurredAt,
+              None,
+              visitor
+            )
+          ctx.app.timelineDTOFactory.toDTO(createdEv).toJSON
+      }
     }
   }
 
@@ -185,46 +182,51 @@ class Timeline
     // create new timeline
     // accepts JSON
 
-    // returns JSON
-    contentType = formats("json")
+    withContext { implicit ctx =>
+      // returns JSON
+      contentType = formats("json")
 
-    val ast = parsedBody
-    ast match {
-      case JNothing =>
-      // not json.
-      case otherwise =>
-        println(otherwise)
-        import scala.util.control.Exception._
-        val tl = ast.extract[TimelineDRO]
-        val eventIds: Seq[BigInt] =
-          tl.events.split(",").flatMap { s => allCatch opt { BigInt(s) } }
+      val ast = parsedBody
+      ast match {
+        case JNothing =>
+        // not json.
+        case otherwise =>
+          println(otherwise)
+          import scala.util.control.Exception._
+          val tl = ast.extract[TimelineDRO]
+          val eventIds: Seq[BigInt] =
+            tl.events.split(",").flatMap { s => allCatch opt { BigInt(s) } }
 
-        val createdTimeline =
-          app.timelineService.create(
-            title = tl.title,
-            eventIds = eventIds,
-            user
-          )
+          val visitor = ctx.app.userRepository.find(ctx.visitor.name).get
+          val createdTimeline =
+            ctx.app.timelineService.create(
+              title = tl.title,
+              eventIds = eventIds,
+              editor = visitor
+            )
 
-        createdTimeline match {
-          case Right(tl) =>
-            val events = app.eventService.findByTimeline(tl)
-            app.timelineDTOFactory.toDTO(tl, events)
-          case Left(_) =>
-            status = 500
-            "failed"
-        }
+          createdTimeline match {
+            case Right(tl) =>
+              val events = ctx.app.eventService.findByTimeline(tl)
+              ctx.app.timelineDTOFactory.toDTO(tl, events)
+            case Left(_) =>
+              status = 500
+              "failed"
+          }
+      }
     }
   }
 
   val editroom = get("/-/editroom") {
-    views.html.editroom()
+    withContext { implicit ctx => views.html.editroom() }
   }
 
   xsrfGuard("/-/edit")
 
   get("/-/edit") {
-    views.html.eventedit(None, xsrfKey, xsrfToken)
+    withContext { implicit ctx =>
+      views.html.eventedit(None, xsrfKey, xsrfToken)
+    }
   }
 
   post("/-/edit") {

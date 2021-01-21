@@ -1,5 +1,5 @@
 @(timelines: Seq[windymelt.timeline.application.dto.Timeline], triageEvents:
-Seq[windymelt.timeline.application.dto.Event])(implicit tl: windymelt.timeline.Timeline, req: HttpServletRequest)
+Seq[windymelt.timeline.application.dto.Event])(implicit ctx: windymelt.timeline.Context)
 @import windymelt.timeline.application.dto.DTODateTimeFormatter._
 @import windymelt.timeline.application.URI
 @import scala.language.implicitConversions

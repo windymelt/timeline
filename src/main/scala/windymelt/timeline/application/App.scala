@@ -6,6 +6,7 @@ import windymelt.timeline.infrastructure._
 
 class App
     extends Database
+    with windymelt.timeline.ContextComponent
     with UserModelComponent
     with EventModelComponent
     with TimelineModelComponent
