@@ -1,5 +1,4 @@
-@(timeline: windymelt.timeline.application.dto.Timeline)(implicit tl: windymelt.timeline.Timeline, req:
-HttpServletRequest)
+@(timeline: windymelt.timeline.application.dto.Timeline)(implicit ctx: windymelt.timeline.Context)
 @import windymelt.timeline.application.dto.DTODateTimeFormatter._
 @import scala.language.implicitConversions
 @layouts.html.default("Timeline: Describing your history", "サクサク年表君"){

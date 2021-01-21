@@ -32,6 +32,19 @@ trait ConcreteTimelineServiceComponent extends TimelineServiceComponent {
   val timelineService: TimelineService
 
   class ConcreteTimelineService extends TimelineService {
+    def createTimeline(
+        title: String,
+        events: Seq[Event],
+        extendedFrom: Set[Timeline] = Set.empty,
+        editor: User
+    ): Timeline = {
+      // TODO: Domain Service: Timeline merger/editor?
+      val timelineId = ID.gen()
+      val tl = Timeline(timelineId, title, editor, extendedFrom)
+      events foreach (eventRepository.save)
+      eventRepository.addRelationToTimeline(tl, events.toSet)
+      timelineRepository.save(tl)
+    }
     def create(
         title: String,
         eventIds: Seq[windymelt.timeline.Types.ID],
