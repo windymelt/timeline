@@ -30,7 +30,7 @@ trait DBUserRepositoryComponent extends UserRepositoryComponent {
         SET id=${user.id},
             name=${user.name}
         ON DUPLICATE KEY UPDATE name=VALUES(name)
-        """.update().apply()
+        """.update()
       }
       find(user.id).get
     }
@@ -39,18 +39,16 @@ trait DBUserRepositoryComponent extends UserRepositoryComponent {
       sql"SELECT * FROM `user` WHERE id=${id}"
         .map(getUserFromRs)
         .headOption()
-        .apply()
     }
 
     def find(name: String): Option[User] = DB readOnly { implicit session =>
       sql"SELECT * FROM `user` WHERE name=${name}"
         .map(getUserFromRs)
         .headOption()
-        .apply()
     }
 
     def delete(user: User): Unit = DB autoCommit { implicit session =>
-      sql"DELETE FROM `user` WHERE id=${user.id}".update().apply()
+      sql"DELETE FROM `user` WHERE id=${user.id}".update()
     }
 
   }

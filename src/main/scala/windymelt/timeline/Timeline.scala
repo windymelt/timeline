@@ -232,4 +232,35 @@ class Timeline
   post("/-/edit") {
     "OK!!"
   }
+
+  // GraphQL
+  get("/graphql") {
+    // stub
+    import sangria.schema._
+    type StubCtx = Unit
+    val QueryType = ObjectType(
+      "Query",
+      fields[StubCtx, Unit](
+        Field(
+          "ultimatenumber",
+          IntType,
+          description = Some("ultimate number is 42"),
+          resolve = c => 42 // instant value
+        )
+      )
+    )
+    val schema = Schema(QueryType)
+    import sangria.execution._
+    import sangria.macros._
+    val query = graphql"""
+    query {
+      ultimatenumber
+    }
+      """
+    implicit val ec: scala.concurrent.ExecutionContext =
+      scala.concurrent.ExecutionContext.global
+
+    val queryResult = Executor.execute(schema, query, ())
+    queryResult
+  }
 }

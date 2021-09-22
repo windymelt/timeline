@@ -54,21 +54,20 @@ trait DBEventRepositoryComponent extends EventRepositoryComponent {
             occurred_at=VALUES(occurred_at),
             until=VALUES(until),
             editor_user_id= VALUES(editor_user_id)
-          """.update().apply()
+          """.update()
       }
       println(s"modified $resultRows")
       find(event.id).get
     }
 
     def delete(event: Event): Unit = DB autoCommit { implicit session =>
-      sql"DELETE FROM `event` WHERE id=${event.id}".update().apply()
+      sql"DELETE FROM `event` WHERE id=${event.id}".update()
     }
 
     def find(editor: User): Set[Event] = DB readOnly { implicit session =>
       sql"SELECT * FROM `event` WHERE editor_user_id=${editor.id}"
         .map(getEventFromRs)
         .list()
-        .apply()
         .toSet
     }
 
@@ -77,7 +76,6 @@ trait DBEventRepositoryComponent extends EventRepositoryComponent {
         val lis = sql"SELECT * FROM `event` WHERE id IN (${eventIds})"
           .map(getEventFromRs) // TODO: N+1 issue here
           .list()
-          .apply()
           .groupMapReduce(_.id)(identity)((left, _) => left) // idで一意なので先頭だけ取る
         eventIds.flatMap(lis.get)
     }
@@ -88,11 +86,9 @@ trait DBEventRepositoryComponent extends EventRepositoryComponent {
           sql"SELECT event_id FROM timeline_event_relation WHERE timeline_id=${timelineId}"
             .map(_.bigInt("event_id"))
             .list()
-            .apply()
         sql"SELECT * FROM `event` WHERE id IN (${eventIds})"
           .map(getEventFromRs)
           .list()
-          .apply()
           .sortBy(_.occurredAt)
     }
 
@@ -104,7 +100,6 @@ trait DBEventRepositoryComponent extends EventRepositoryComponent {
           val id = ID.gen()
           sql"INSERT INTO timeline_event_relation VALUES ($id, ${timeline.id}, ${e.id})"
             .update()
-            .apply()
         }
       }
   }

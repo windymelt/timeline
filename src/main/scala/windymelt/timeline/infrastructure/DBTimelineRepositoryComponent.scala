@@ -29,7 +29,6 @@ trait DBTimelineRepositoryComponent extends TimelineRepositoryComponent {
         sql"SELECT id, name FROM user WHERE id=${rs.bigInt("editor_user_id")}"
           .map(r => User(r.bigInt("id"), r.string("name")))
           .single()
-          .apply()
           .get
       Timeline(rs.get("id"), rs.get("title"), u, Set()) // TODO
     }
@@ -38,7 +37,6 @@ trait DBTimelineRepositoryComponent extends TimelineRepositoryComponent {
       sql"SELECT * FROM `timeline` WHERE id=${id}"
         .map(getTimelineFromRs)
         .single()
-        .apply()
     }
 
     def findByEditor(user: User): Set[Timeline] = DB readOnly {
@@ -46,7 +44,6 @@ trait DBTimelineRepositoryComponent extends TimelineRepositoryComponent {
         sql"SELECT * FROM `timeline` WHERE editor_user_id=${user.id}"
           .map(getTimelineFromRs)
           .list()
-          .apply()
           .toSet
     }
 
@@ -58,7 +55,6 @@ trait DBTimelineRepositoryComponent extends TimelineRepositoryComponent {
         title=${timeline.title},
         editor_user_id=${timeline.editor.id}
       """.update()
-          .apply()
       }
       find(timeline.id).get
     }

@@ -22,7 +22,6 @@ trait Database extends Loggable {
     sql"SELECT UUID_SHORT() AS uuid_short"
       .map(_.long(1))
       .headOption()
-      .apply()
       .get
   }
 }

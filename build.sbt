@@ -1,6 +1,8 @@
-val ScalatraVersion = "2.7.0"
+val ScalatraVersion = "2.8.0"
 
-val json4sVersion = "3.6.7"
+val json4sVersion = "4.0.0"
+
+val sJdbcVersion = "4.0.0-RC2"
 
 organization := "windymelt"
 
@@ -8,7 +10,7 @@ name := "Timeline"
 
 version := "0.1.0-SNAPSHOT"
 
-scalaVersion := "2.13.4"
+scalaVersion := "2.13.6"
 
 resolvers += Classpaths.typesafeReleases
 
@@ -23,12 +25,14 @@ libraryDependencies ++= Seq(
   "com.github.nscala-time" %% "nscala-time" % "2.24.0",
   // DB
   "mysql" % "mysql-connector-java" % "8.0.22",
-  "org.scalikejdbc" %% "scalikejdbc" % "3.5.0",
-  "org.scalikejdbc" %% "scalikejdbc-joda-time" % "3.5.0", // use joda time / nscalatime
+  "org.scalikejdbc" %% "scalikejdbc" % sJdbcVersion,
+  "org.scalikejdbc" %% "scalikejdbc-joda-time" % sJdbcVersion, // use joda time / nscalatime
   "com.h2database" % "h2" % "1.4.200", // for test purpose
   "ch.qos.logback" % "logback-classic" % "1.2.3",
-  "org.scalikejdbc" %% "scalikejdbc-test" % "3.5.0" % "test",
-  "org.scalikejdbc" %% "scalikejdbc-config" % "3.5.0" // to read application.conf
+  "org.scalikejdbc" %% "scalikejdbc-test" % sJdbcVersion % "test",
+  "org.scalikejdbc" %% "scalikejdbc-config" % sJdbcVersion, // to read application.conf
+  "org.sangria-graphql" %% "sangria" % "2.1.3", // Sangria: GraphQL Middleware
+  "org.sangria-graphql" %% "sangria-json4s-jackson" % "2.0.1"
 )
 
 lazy val root =
