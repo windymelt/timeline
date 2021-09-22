@@ -234,8 +234,8 @@ class Timeline
   }
 
   // GraphQL
-  get("/graphql") {
-    // stub
+  post("/graphql") {
+    // stub schema start
     import sangria.schema._
     type StubCtx = Unit
     val QueryType = ObjectType(
@@ -250,19 +250,24 @@ class Timeline
       )
     )
     val schema = Schema(QueryType)
+    // stub schema end
+
     import sangria.execution._
-    import sangria.macros._
-    val query = graphql"""
-    query {
-      ultimatenumber
-    }
-      """
+    val JString(bodyQuery) = parsedBody \ "query"
+    val query = sangria.parser.QueryParser.parse(bodyQuery).get
+
     implicit val ec: scala.concurrent.ExecutionContext =
       scala.concurrent.ExecutionContext.global
 
     import sangria.marshalling.json4s.jackson._
     val queryResult = Executor.execute(schema, query, ())
     contentType = formats("json")
-    queryResult.map(Json4sJacksonInputUnmarshaller.render)
+    import scala.concurrent.Await
+    import scala.concurrent.duration._
+    import scala.language.postfixOps
+    Await.result(
+      queryResult.map(Json4sJacksonInputUnmarshaller.render),
+      10 seconds
+    )
   }
 }
