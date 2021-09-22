@@ -260,7 +260,9 @@ class Timeline
     implicit val ec: scala.concurrent.ExecutionContext =
       scala.concurrent.ExecutionContext.global
 
+    import sangria.marshalling.json4s.jackson._
     val queryResult = Executor.execute(schema, query, ())
-    queryResult
+    contentType = formats("json")
+    queryResult.map(Json4sJacksonInputUnmarshaller.render)
   }
 }
