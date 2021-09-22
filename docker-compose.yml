@@ -36,3 +36,9 @@ services:
         environment: 
             - MYSQL_ROOT_PASSWORD=my-secret-pw
         command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    graphiql:
+        image: npalm/graphiql
+        ports:
+            - 4000:4000
+        environment:
+            - API_URL=http://localhost:8000/graphql
