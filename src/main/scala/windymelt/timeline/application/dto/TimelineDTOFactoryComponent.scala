@@ -18,7 +18,7 @@ trait TimelineDTOFactoryComponent {
     def toDTO(
         timeline: Timeline,
         events: Seq[Event]
-    ): windymelt.timeline.application.dto.Timeline = {
+    ): DTOTimeline = {
       DTOTimeline(
         timeline.id.toString(),
         timeline.title,
@@ -26,7 +26,7 @@ trait TimelineDTOFactoryComponent {
         events.map(toDTO)
       )
     }
-    def toDTO(event: Event): windymelt.timeline.application.dto.Event = {
+    def toDTO(event: Event): DTOEvent = {
       DTOEvent(
         event.id.toString(),
         event.name,
@@ -36,7 +36,7 @@ trait TimelineDTOFactoryComponent {
         toDTO(event.editor)
       )
     }
-    def toDTO(user: User): windymelt.timeline.application.dto.User = {
+    def toDTO(user: User): DTOUser = {
       DTOUser(user.id.toString(), user.name)
     }
   }

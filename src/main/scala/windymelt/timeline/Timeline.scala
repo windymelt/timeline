@@ -237,15 +237,40 @@ class Timeline
   post("/graphql") {
     // stub schema start
     import sangria.schema._
-    type StubCtx = Unit
+    type Ctx = application.App
+
+    import graphql.Types._
+
+    // end macros
+    val ID = Argument("id", StringType, description = "id")
+    val NameArg = Argument("name", StringType)
     val QueryType = ObjectType(
       "Query",
-      fields[StubCtx, Unit](
+      fields[Ctx, Unit](
         Field(
           "ultimatenumber",
           IntType,
           description = Some("ultimate number is 42"),
           resolve = c => 42 // instant value
+        ),
+        Field(
+          "user",
+          OptionType(UserType),
+          arguments = NameArg :: Nil,
+          resolve = ctx => {
+            app.userRepository
+              .find(ctx arg NameArg)
+              .map(app.timelineDTOFactory.toDTO)
+          }
+        ),
+        Field(
+          "event",
+          OptionType(EventType),
+          arguments = ID :: Nil,
+          resolve = ctx => {
+            val id: BigInt = BigInt(ctx arg ID)
+            app.eventRepository.find(id).map(app.timelineDTOFactory.toDTO)
+          }
         )
       )
     )
@@ -260,7 +285,7 @@ class Timeline
       scala.concurrent.ExecutionContext.global
 
     import sangria.marshalling.json4s.jackson._
-    val queryResult = Executor.execute(schema, query, ())
+    val queryResult = Executor.execute(schema, query, app)
     contentType = formats("json")
     import scala.concurrent.Await
     import scala.concurrent.duration._

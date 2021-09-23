@@ -29,10 +29,10 @@ object DTOJSONSerializer {
 }
 
 sealed trait DateTimeCategory
-final object HourLevel extends DateTimeCategory
-final object DayLevel extends DateTimeCategory
-final object MonthLevel extends DateTimeCategory
-final object YearLevel extends DateTimeCategory
+case object HourLevel extends DateTimeCategory
+case object DayLevel extends DateTimeCategory
+case object MonthLevel extends DateTimeCategory
+case object YearLevel extends DateTimeCategory
 
 trait DTO
 
