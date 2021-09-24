@@ -78,6 +78,7 @@ project/project/
 # frontend
 frontend/dist/*
 frontend/node_modules
+frontend/.next
 
 # DB, etc.
 tmp/
