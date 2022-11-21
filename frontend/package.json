@@ -15,14 +15,14 @@
     "ts-loader": "^7.0.5",
     "typescript": "^3.9.5",
     "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11"
+    "webpack-cli": "^3.3.12"
   },
   "dependencies": {
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
     "fomantic-ui": "^2.8.8",
     "fomantic-ui-css": "^2.8.8",
-    "next": "^11.1.2",
+    "next": "^13.0.4",
     "react": "^16.14.0",
     "react-dom": "^16.14.0"
   },
